@@ -4,8 +4,8 @@ import com.dade.bin.mybin.executor.Executor;
 
 public class BINSession {
 
-    BINConfig binConfig;
-    Executor executor;
+    private final BINConfig binConfig;
+    private final Executor executor;
 
     public BINSession(BINConfig binConfig, Executor executor){
         this.binConfig = binConfig;
@@ -15,5 +15,10 @@ public class BINSession {
     public Object clean(){
         return executor.clean(binConfig);
     }
+
+    public BINConfig getConfiguration() {
+        return binConfig;
+    }
+
 
 }
