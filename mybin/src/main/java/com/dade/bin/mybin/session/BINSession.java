@@ -20,5 +20,9 @@ public class BINSession {
         return binConfig;
     }
 
+    public <T> T getMapper(Class<T> type) {
+        return binConfig.<T>getMapper(type, this);
+    }
+
 
 }
