@@ -2,6 +2,7 @@ package com.dade.bin.mybin.parse;
 
 import com.dade.bin.mybin.annotations.*;
 import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.ReturnEntity;
 import com.google.common.collect.Maps;
 
 import java.lang.annotation.Annotation;
@@ -64,12 +65,19 @@ public class MapperAnnotationBuilder {
     }
 
     private void parseResultMap(Method method) {
+        ReturnEntity re = new ReturnEntity();
+        // TODO 多线程思考
+        Map<String, Integer> map = Maps.newHashMap();
         Class<?> returnType = method.getReturnType();
         Field[] fields = returnType.getDeclaredFields();
         for (Field field : fields) {
-
+            Order order = field.getAnnotation(Order.class);
+            String name = field.getName();
+            map.put(name, order.value());
         }
-
+        re.setReturnType(returnType);
+        re.setFieldMap(map);
+        configuration.setReturnEntity(re);
     }
 
     public void parse() {
