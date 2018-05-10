@@ -16,8 +16,15 @@ public class BINConfig {
 
     Map<Integer, Integer> regularConfig;
 
+    ReturnEntity returnEntity;
 
+    public ReturnEntity getReturnEntity() {
+        return returnEntity;
+    }
 
+    public void setReturnEntity(ReturnEntity returnEntity) {
+        this.returnEntity = returnEntity;
+    }
 
     public String getFilePackageRegex() {
         return filePackageRegex;

@@ -5,6 +5,7 @@ import com.dade.bin.mybin.session.BINConfig;
 import com.google.common.collect.Maps;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -64,7 +65,10 @@ public class MapperAnnotationBuilder {
 
     private void parseResultMap(Method method) {
         Class<?> returnType = method.getReturnType();
+        Field[] fields = returnType.getDeclaredFields();
+        for (Field field : fields) {
 
+        }
 
     }
 
