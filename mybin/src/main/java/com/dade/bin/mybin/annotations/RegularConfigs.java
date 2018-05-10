@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface FilePackage {
-    String value();
-    String regex() default "";
+public @interface RegularConfigs {
+
+    RegularConfig[] value();
+
 }

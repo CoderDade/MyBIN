@@ -12,8 +12,20 @@ public class BINConfig {
     Integer subBlockLen;
     String fileName;
     String filePackage;
+    String filePackageRegex;
 
-    Map<String, Integer> regularConfig;
+    Map<Integer, Integer> regularConfig;
+
+
+
+
+    public String getFilePackageRegex() {
+        return filePackageRegex;
+    }
+
+    public void setFilePackageRegex(String filePackageRegex) {
+        this.filePackageRegex = filePackageRegex;
+    }
 
     protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
 
@@ -69,11 +81,11 @@ public class BINConfig {
         this.filePackage = filePackage;
     }
 
-    public Map<String, Integer> getRegularConfig() {
+    public Map<Integer, Integer> getRegularConfig() {
         return regularConfig;
     }
 
-    public void setRegularConfig(Map<String, Integer> regularConfig) {
+    public void setRegularConfig(Map<Integer, Integer> regularConfig) {
         this.regularConfig = regularConfig;
     }
 }

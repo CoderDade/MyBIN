@@ -39,6 +39,7 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
     public void afterPropertiesSet() throws Exception {
         notNull(this.mapperInterface, "Property 'mapperInterface' is required");
 
+        // 在这里解析注解
         BINConfig configuration = getSession().getConfiguration();
         if (!configuration.hasMapper(this.mapperInterface)) {
             try {
@@ -55,7 +56,8 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
 
 
     private BINSession getSession(){
-        BINSession binSession =  new BINSession(null,new DefaultExcutor());
+        // 这里和mybatis不同，不需要去解析xml，所以直接用空的Config
+        BINSession binSession =  new BINSession(new BINConfig(),new DefaultExcutor());
         return binSession;
     }
 
