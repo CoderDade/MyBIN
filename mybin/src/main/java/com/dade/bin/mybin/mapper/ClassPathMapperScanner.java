@@ -11,6 +11,9 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import java.util.Arrays;
 import java.util.Set;
 
+/**
+ * 配置入口
+ */
 public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassPathMapperScanner.class);
