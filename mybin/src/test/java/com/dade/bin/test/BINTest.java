@@ -48,11 +48,6 @@ public class BINTest implements ApplicationContextAware {
     }
 
 
-//    @Test
-//    public void testSpringBean(){
-//        BINTestEntity binTestEntity = binTestInterface.testSingleEntity();
-//        System.out.println(binTestEntity.len);
-//    }
 
 
 }
