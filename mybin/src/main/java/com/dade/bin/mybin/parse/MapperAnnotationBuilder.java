@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import static org.springframework.util.Assert.notNull;
+
 public class MapperAnnotationBuilder {
 
     private final BINConfig configuration;
@@ -36,17 +38,27 @@ public class MapperAnnotationBuilder {
             Annotation[] annotations = m.getAnnotations();
             for (Annotation annotation : annotations) {
                 if (annotation instanceof Block) {
-                    configuration.setBlockLen(((Block) annotation).len());
-                    configuration.setReverse(((Block) annotation).reverse());
+                    int len = ((Block) annotation).len();
+                    boolean reverse = ((Block) annotation).reverse();
+                    notNull(len, "Property 'len' is required");
+                    notNull(reverse, "Property 'reverse' is required");
+                    configuration.setBlockLen(len);
+                    configuration.setReverse(reverse);
                 }
                 if (annotation instanceof SubBlock) {
-                    configuration.setSubBlockLen(((SubBlock) annotation).len());
+                    int len = ((SubBlock) annotation).len();
+                    notNull(len, "Property 'len' is required");
+                    configuration.setSubBlockLen(len);
                 }
                 if (annotation instanceof FileName) {
-                    configuration.setFileName(((FileName) annotation).value());
+                    String fileName = ((FileName) annotation).value();
+//                    notNull(fileName, "Property 'fileName' is required");
+                    configuration.setFileName(fileName);
                 }
                 if (annotation instanceof FilePackage) {
-                    configuration.setFilePackage(((FilePackage) annotation).value());
+                    String url = ((FilePackage) annotation).value();
+                    notNull(url, "Property 'url' is required");
+                    configuration.setFilePackage(url);
                     configuration.setFilePackageRegex(((FilePackage) annotation).regex());
                 }
                 if (annotation instanceof RegularConfigs) {

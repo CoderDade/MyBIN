@@ -1,6 +1,6 @@
 package com.dade.bin.mybin.mapper;
 
-import com.dade.bin.mybin.executor.DefaultExcutor;
+import com.dade.bin.mybin.executor.DefaultExecutor;
 import com.dade.bin.mybin.session.BINConfig;
 import com.dade.bin.mybin.session.BINSession;
 import org.slf4j.Logger;
@@ -60,7 +60,7 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
         // 这里和mybatis不同，不需要去解析xml，所以直接用空的Config
         // bug#1 getSession 不断产生新的config
         if (this.session == null) {
-            BINSession binSession =  new BINSession(new BINConfig(),new DefaultExcutor());
+            BINSession binSession =  new BINSession(new BINConfig(),new DefaultExecutor());
             this.session = binSession;
         }
         return this.session;
