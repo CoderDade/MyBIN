@@ -15,6 +15,7 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
     private static final Logger logger = LoggerFactory.getLogger(MapperFactoryBean.class);
 
     private Class<T> mapperInterface;
+    private BINSession session;
 
     public MapperFactoryBean(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;
@@ -29,11 +30,11 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
     }
 
     public Class<?> getObjectType() {
-        return null;
+        return this.mapperInterface;
     }
 
     public boolean isSingleton() {
-        return false;
+        return true;
     }
 
     public void afterPropertiesSet() throws Exception {
@@ -57,8 +58,21 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
 
     private BINSession getSession(){
         // 这里和mybatis不同，不需要去解析xml，所以直接用空的Config
-        BINSession binSession =  new BINSession(new BINConfig(),new DefaultExcutor());
-        return binSession;
+        // bug#1 getSession 不断产生新的config
+        if (this.session == null) {
+            BINSession binSession =  new BINSession(new BINConfig(),new DefaultExcutor());
+            this.session = binSession;
+        }
+        return this.session;
+    }
+
+
+    public Class<T> getMapperInterface() {
+        return mapperInterface;
+    }
+
+    public void setMapperInterface(Class<T> mapperInterface) {
+        this.mapperInterface = mapperInterface;
     }
 
 }
