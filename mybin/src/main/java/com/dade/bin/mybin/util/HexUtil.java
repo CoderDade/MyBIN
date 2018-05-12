@@ -88,6 +88,10 @@ public class HexUtil {
         return result.toString();
     }
 
+    public static Integer bytesToInteger(byte[] bytes, Integer radix){
+        return Integer.valueOf(binary(bytes, 10));
+    }
+
     /**
      * @param src 16进制字符串
      * @return 字节数组

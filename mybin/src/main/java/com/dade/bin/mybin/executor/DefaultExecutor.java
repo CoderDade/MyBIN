@@ -1,5 +1,6 @@
 package com.dade.bin.mybin.executor;
 
+import com.dade.bin.mybin.executor.resultset.DefaultResultSetHandler;
 import com.dade.bin.mybin.executor.resultset.ResultSet;
 import com.dade.bin.mybin.session.BINConfig;
 import com.google.common.collect.Maps;
@@ -22,6 +23,8 @@ import static com.dade.bin.mybin.util.HexUtil.suffix;
 public class DefaultExecutor implements Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultExecutor.class);
+
+    private final DefaultResultSetHandler resultSetHandler = new DefaultResultSetHandler();
 
     @Override
     public Object clean(BINConfig config) {
@@ -100,7 +103,7 @@ public class DefaultExecutor implements Executor {
             }
         }
 
-        return rs;
+        return resultSetHandler.handleResultSets(rs, config);
     }
 
     private Object cleanWithRegularConfig(BINConfig config) {

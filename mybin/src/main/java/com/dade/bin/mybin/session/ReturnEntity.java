@@ -5,7 +5,9 @@ import java.util.Map;
 public class ReturnEntity {
 
     Class<?> returnType;
-    Map<String, Integer> fieldMap;
+
+    // 字段顺序 和 详细信息
+    Map<Integer, FieldEntity> fieldMap;
 
     public Class<?> getReturnType() {
         return returnType;
@@ -15,11 +17,11 @@ public class ReturnEntity {
         this.returnType = returnType;
     }
 
-    public Map<String, Integer> getFieldMap() {
+    public Map<Integer, FieldEntity> getFieldMap() {
         return fieldMap;
     }
 
-    public void setFieldMap(Map<String, Integer> fieldMap) {
+    public void setFieldMap(Map<Integer, FieldEntity> fieldMap) {
         this.fieldMap = fieldMap;
     }
 }
