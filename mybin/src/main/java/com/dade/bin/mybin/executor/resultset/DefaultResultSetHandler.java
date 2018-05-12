@@ -9,45 +9,58 @@ import com.dade.bin.mybin.session.BINConfig;
 import com.dade.bin.mybin.session.FieldEntity;
 import com.dade.bin.mybin.session.ReturnEntity;
 import com.dade.bin.mybin.util.ExceptionUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.dade.bin.mybin.util.HexUtil;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class DefaultResultSetHandler {
 
     private final DefaultObjectFactory objectFactory = new DefaultObjectFactory();
     private final DefaultReflectorFactory reflectorFactory = new DefaultReflectorFactory();
 
-    public Object handleResultSets(ResultSet rs, BINConfig config){
+    public Object handleResultSets(ResultSet rs, BINConfig config) {
         ReturnEntity returnEntity = config.getReturnEntity();
         Object entity = objectFactory.create(returnEntity.getReturnType());
         Reflector reflector = reflectorFactory.findForClass(returnEntity.getReturnType());
 
-        Map<String, Object> fieldMap = createFieldMap(rs, returnEntity);
-
-        setBeanProperty("", entity, "", reflector);
-
-        return null;
+        setBeanProperty(rs, returnEntity, entity, reflector);
+        return entity;
     }
 
-    private Map<String, Object> createFieldMap(ResultSet rs, ReturnEntity returnEntity){
+    private void setBeanProperty(ResultSet rs,
+                                 ReturnEntity returnEntity,
+                                 Object entity,
+                                 Reflector reflector) {
 
         Map<Integer, FieldEntity> fieldMap = returnEntity.getFieldMap();
-        Map<String, Object> map = Maps.newHashMap();
 
-        for (Map.Entry<Integer, FieldEntity> fieldEntry : fieldMap.entrySet()) {
-            FieldEntity fieldEntity = fieldEntry.getValue();
-            if (fieldEntity.getFieldTpye()==String.class){
-                String value = rs.getStringValue(fieldEntry.getKey());
-                map.put(fieldEntity.getFieldName(), value);
-            }else if (fieldEntity.getFieldTpye() == Integer.class) {
-                Integer value = rs.getIntegerValue(fieldEntry.getKey());
-                map.put(fieldEntity.getFieldName(), value);
+        List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
+        for (Map<Integer, byte[]> cleanResult : cleanResults) {
+            Integer order = getCleanResultKey(cleanResult.keySet());
+            byte[] result = getCleanResultValue(cleanResult.values());
+            FieldEntity fieldEntity = fieldMap.get(order);
+
+            Object value = null;
+
+            if (fieldEntity.getFieldTpye() == String.class) {
+                value = getStringValue(result);
+            } else if (fieldEntity.getFieldTpye() == Integer.class) {
+                value = getIntegerValue(result);
             }
+
+            setBeanProperty(fieldEntity.getFieldName(), entity, value, reflector);
         }
-        return map;
+    }
+
+    private Integer getCleanResultKey(Set<Integer> keys) {
+        return keys.stream().findFirst().orElse(null);
+    }
+
+    private byte[] getCleanResultValue(Collection<byte[]> values) {
+        return values.stream().findFirst().orElse(null);
     }
 
     private void setBeanProperty(String prop, Object object, Object value, Reflector reflector) {
@@ -62,6 +75,14 @@ public class DefaultResultSetHandler {
         } catch (Throwable t) {
             throw new ReflectionException("Could not set property '" + prop + "' of '" + object.getClass() + "' with value '" + value + "' Cause: " + t.toString(), t);
         }
+    }
+
+    public String getStringValue(byte[] bytes) {
+        return HexUtil.getStringFromBytes(bytes);
+    }
+
+    public Integer getIntegerValue(byte[] bytes) {
+        return HexUtil.bytesToInteger(bytes, 10);
     }
 
 }

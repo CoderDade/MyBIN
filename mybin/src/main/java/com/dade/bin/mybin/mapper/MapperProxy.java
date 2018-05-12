@@ -31,13 +31,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
         return binSession.clean();
     }
 
-    private MapperMethod cachedMapperMethod(Method method) {
-        MapperMethod mapperMethod = methodCache.get(method);
-        if (mapperMethod == null) {
-            mapperMethod = new MapperMethod(mapperInterface, method, binSession.getConfiguration());
-            methodCache.put(method, mapperMethod);
-        }
-        return mapperMethod;
-    }
+//    private MapperMethod cachedMapperMethod(Method method) {
+//        MapperMethod mapperMethod = methodCache.get(method);
+//        if (mapperMethod == null) {
+//            mapperMethod = new MapperMethod(mapperInterface, method, binSession.getConfiguration());
+//            methodCache.put(method, mapperMethod);
+//        }
+//        return mapperMethod;
+//    }
 
 }

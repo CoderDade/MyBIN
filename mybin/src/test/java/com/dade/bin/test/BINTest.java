@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:spring.xml"})
@@ -44,8 +45,16 @@ public class BINTest implements ApplicationContextAware {
 //        Object mapper = context.getBean("mapperFactoryBean");
 //        mapper.toString();
         BINTestEntity binTestEntity = binTestInterface.testSingleEntity();
-//        binTestEntity.toString();
+        System.out.println(binTestEntity.toString());
     }
+
+//    @Test
+//    public void getBean(){
+//        Object mapper = context.getBean("mapperFactoryBean");
+//        mapper.toString();
+//        List<BINTestEntity> binTestEntitys = binTestInterface.testMulEntity();
+//        binTestEntitys.forEach(System.out::println);
+//    }
 
 
 

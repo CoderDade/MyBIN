@@ -3,10 +3,12 @@ package com.dade.bin.mybin.executor;
 import com.dade.bin.mybin.executor.resultset.DefaultResultSetHandler;
 import com.dade.bin.mybin.executor.resultset.ResultSet;
 import com.dade.bin.mybin.session.BINConfig;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.List;
 import java.util.Map;
 
 import static com.dade.bin.mybin.util.HexUtil.binary;
@@ -29,14 +32,14 @@ public class DefaultExecutor implements Executor {
     @Override
     public Object clean(BINConfig config) {
         if (config.getReverse()) {
-            return cleanWithoutReverse(config);
+            return cleanWithReverse(config);
         }
         return cleanWithoutReverse(config);
     }
 
     private Object cleanWithReverse(BINConfig config) {
 
-        if (config.getRegularConfig().isEmpty()) {
+        if (CollectionUtils.isEmpty(config.getRegularConfig())) {
             return cleanWithoutRegularConfig(config);
         }
         return cleanWithRegularConfig(config);
@@ -49,8 +52,8 @@ public class DefaultExecutor implements Executor {
     private Object cleanWithoutRegularConfig(BINConfig config) {
         String pathName = config.getFilePackage();
         FileInputStream fin = null;
-        Map<Integer, byte[]> resultMap = Maps.newHashMap();
-        ResultSet rs = new ResultSet(resultMap);
+        List<Map<Integer, byte[]>> resultMaps = Lists.newArrayList();
+        ResultSet rs = new ResultSet(resultMaps);
         try {
             fin = new FileInputStream(new File(pathName));
             FileChannel channel = fin.getChannel();
@@ -64,6 +67,7 @@ public class DefaultExecutor implements Executor {
 
             int count = 0;
             while ((length = channel.read(blockLenLenBuffer)) != -1) {
+                Map<Integer, byte[]> resultMap = Maps.newHashMap();
                 blockLenLenBuffer.clear();
                 byte[] bytes = blockLenLenBuffer.array();
                 ArrayUtils.reverse(bytes);
@@ -87,6 +91,7 @@ public class DefaultExecutor implements Executor {
                 } catch (ArrayIndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
+                resultMaps.add(resultMap);
             }
             channel.close();
         } catch (FileNotFoundException e) {
