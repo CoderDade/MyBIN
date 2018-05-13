@@ -38,29 +38,25 @@ public class DefaultResultSetHandler {
         Map<Integer, FieldEntity> fieldMap = returnEntity.getFieldMap();
 
         List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
-        for (Map<Integer, byte[]> cleanResult : cleanResults) {
-            Integer order = getCleanResultKey(cleanResult.keySet());
-            byte[] result = getCleanResultValue(cleanResult.values());
-            FieldEntity fieldEntity = fieldMap.get(order);
+        for (Map<Integer, byte[]> cleanResultMap : cleanResults) {
+            for (Map.Entry<Integer, byte[]> entry : cleanResultMap.entrySet()) {
+                Integer order = entry.getKey();
+                byte[] result = entry.getValue();
 
-            Object value = null;
+                FieldEntity fieldEntity = fieldMap.get(order);
 
-            if (fieldEntity.getFieldTpye() == String.class) {
-                value = getStringValue(result);
-            } else if (fieldEntity.getFieldTpye() == Integer.class) {
-                value = getIntegerValue(result);
+                Object value = null;
+
+                if (fieldEntity.getFieldTpye() == String.class) {
+                    value = getStringValue(result);
+                } else if (fieldEntity.getFieldTpye() == Integer.class) {
+                    value = getIntegerValue(result);
+                }
+
+                setBeanProperty(fieldEntity.getFieldName(), entity, value, reflector);
+
             }
-
-            setBeanProperty(fieldEntity.getFieldName(), entity, value, reflector);
         }
-    }
-
-    private Integer getCleanResultKey(Set<Integer> keys) {
-        return keys.stream().findFirst().orElse(null);
-    }
-
-    private byte[] getCleanResultValue(Collection<byte[]> values) {
-        return values.stream().findFirst().orElse(null);
     }
 
     private void setBeanProperty(String prop, Object object, Object value, Reflector reflector) {

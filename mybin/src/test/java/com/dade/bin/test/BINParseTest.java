@@ -1,5 +1,6 @@
 package com.dade.bin.test;
 
+import com.dade.bin.mybin.executor.DefaultExecutor;
 import com.dade.bin.mybin.session.BINConfig;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
@@ -24,6 +25,12 @@ public class BINParseTest {
         config.setSubBlockLen(1);
         config.setFilePackage("D:\\KAT\\standBin.BIN");
         return config;
+    }
+
+    @Test
+    public void testParseTem(){
+        DefaultExecutor executor = new DefaultExecutor();
+        executor.cleanWithoutRegularConfig(getMockBINConfig());
     }
 
     @Test
@@ -84,6 +91,9 @@ public class BINParseTest {
                 }
             }
         }
+
+        resultMap.entrySet().forEach(System.out::println);
+
     }
 
 }

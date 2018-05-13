@@ -3,6 +3,7 @@ package com.dade.bin.mybin.executor;
 import com.dade.bin.mybin.executor.resultset.DefaultResultSetHandler;
 import com.dade.bin.mybin.executor.resultset.ResultSet;
 import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.util.HexUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
@@ -49,7 +50,7 @@ public class DefaultExecutor implements Executor {
         return null;
     }
 
-    private Object cleanWithoutRegularConfig(BINConfig config) {
+    public Object cleanWithoutRegularConfig(BINConfig config) {
         String pathName = config.getFilePackage();
         FileInputStream fin = null;
         List<Map<Integer, byte[]>> resultMaps = Lists.newArrayList();
@@ -65,7 +66,6 @@ public class DefaultExecutor implements Executor {
             ByteBuffer blockLenLenBuffer = ByteBuffer.allocate(blockLenLen);
             int length = -1;
 
-            int count = 0;
             while ((length = channel.read(blockLenLenBuffer)) != -1) {
                 Map<Integer, byte[]> resultMap = Maps.newHashMap();
                 blockLenLenBuffer.clear();
@@ -74,24 +74,29 @@ public class DefaultExecutor implements Executor {
                 Integer blockLen = Integer.valueOf(binary(bytes, 10));
                 ByteBuffer blockBuffer = ByteBuffer.allocate(blockLen);
 
-                count++;
                 try {
+                    int insideCnt = 0;
                     if ((length = channel.read(blockBuffer)) != -1) {
                         blockBuffer.clear();
                         byte[] rowArray = blockBuffer.array();
                         int index = 0;
 
-                        int subBlockLen = rowArray[index+subLenLen];
-                        index += subLenLen;
-                        byte[] singleBlock = ArrayUtils.subarray(rowArray, index, index + subBlockLen);
+                        while (index+subLenLen<rowArray.length){
+                            insideCnt++;
+//                            int subBlockLen = rowArray[index+subLenLen];
+                            int subBlockLen = HexUtil.bytesToInteger(ArrayUtils.subarray(rowArray, index, index + subLenLen), 10);
+                            index = index + subLenLen;
+                            byte[] singleBlock = ArrayUtils.subarray(rowArray, index, index + subBlockLen);
+                            index = index + subBlockLen;
 
-                        resultMap.put(count, singleBlock);
+                            resultMap.put(insideCnt, singleBlock);
+                        }
+                        resultMaps.add(resultMap);
                     }
 
                 } catch (ArrayIndexOutOfBoundsException e) {
                     e.printStackTrace();
                 }
-                resultMaps.add(resultMap);
             }
             channel.close();
         } catch (FileNotFoundException e) {
