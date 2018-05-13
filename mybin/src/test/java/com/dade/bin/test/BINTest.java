@@ -40,22 +40,22 @@ public class BINTest implements ApplicationContextAware {
     @Autowired
     BINTestInterface binTestInterface;
 
-    @Test
-    public void getSpringBean(){
-//        Object mapper = context.getBean("mapperFactoryBean");
-//        mapper.toString();
-        BINTestEntity binTestEntity = binTestInterface.testSingleEntity();
-        System.out.println(binTestEntity.toString());
-    }
-
 //    @Test
-//    public void getBean(){
+//    public void getSpringBean(){
 //        Object mapper = context.getBean("mapperFactoryBean");
 //        mapper.toString();
-//        List<BINTestEntity> binTestEntitys = binTestInterface.testMulEntity();
-//        binTestEntitys.forEach(System.out::println);
+//        BINTestEntity binTestEntity = binTestInterface.testSingleEntity();
+//        System.out.println(binTestEntity.toString());
 //    }
 
+    @Test
+    public void getBean(){
+//        Object mapper = context.getBean("mapperFactoryBean");
+//        mapper.toString();
+        List<BINTestEntity> binTestEntitys = binTestInterface.testMulEntity();
+        binTestEntitys.forEach(System.out::println);
+    }
+//
 
 
 

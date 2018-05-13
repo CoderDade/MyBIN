@@ -5,9 +5,28 @@ import java.util.Map;
 public class ReturnEntity {
 
     Class<?> returnType;
-
     // 字段顺序 和 详细信息
     Map<Integer, FieldEntity> fieldMap;
+
+    boolean isCollection = false;
+    Class<?> realType;
+
+
+    public boolean isCollection() {
+        return isCollection;
+    }
+
+    public void setCollection(boolean collection) {
+        isCollection = collection;
+    }
+
+    public Class<?> getRealType() {
+        return realType;
+    }
+
+    public void setRealType(Class<?> realType) {
+        this.realType = realType;
+    }
 
     public Class<?> getReturnType() {
         return returnType;

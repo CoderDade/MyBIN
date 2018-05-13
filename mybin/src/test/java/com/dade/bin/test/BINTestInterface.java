@@ -9,14 +9,14 @@ import java.util.List;
 
 public interface BINTestInterface {
 
-    @Block(len=2, reverse = true)
-    @SubBlock(len=1)
-    @FilePackage("D:\\KAT\\standBin.BIN")
-    BINTestEntity testSingleEntity();
-
 //    @Block(len=2, reverse = true)
 //    @SubBlock(len=1)
 //    @FilePackage("D:\\KAT\\standBin.BIN")
-//    List<BINTestEntity> testMulEntity();
+//    BINTestEntity testSingleEntity();
+
+    @Block(len=2, reverse = true)
+    @SubBlock(len=1)
+    @FilePackage("D:\\KAT\\standBin.BIN")
+    List<BINTestEntity> testMulEntity();
 
 }

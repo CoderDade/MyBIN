@@ -24,11 +24,46 @@ public class DefaultResultSetHandler {
     public Object handleResultSets(ResultSet rs, BINConfig config) {
         ReturnEntity returnEntity = config.getReturnEntity();
         Object entity = objectFactory.create(returnEntity.getReturnType());
-        Reflector reflector = reflectorFactory.findForClass(returnEntity.getReturnType());
 
-        setBeanProperty(rs, returnEntity, entity, reflector);
+        if (returnEntity.isCollection()) {
+            setBeanPropertyForCollection(rs, returnEntity, entity);
+        } else {
+            Reflector reflector = reflectorFactory.findForClass(returnEntity.getReturnType());
+            setBeanProperty(rs, returnEntity, entity, reflector);
+        }
+
+
         return entity;
     }
+
+    private void setBeanPropertyForCollection(ResultSet rs,
+                                              ReturnEntity returnEntity,
+                                              Object entity) {
+        Reflector reflector = reflectorFactory.findForClass(returnEntity.getRealType());
+        Map<Integer, FieldEntity> fieldMap = returnEntity.getFieldMap();
+
+        List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
+        for (Map<Integer, byte[]> cleanResultMap : cleanResults) {
+            Object subEntity = objectFactory.create(returnEntity.getRealType());
+            for (Map.Entry<Integer, byte[]> entry : cleanResultMap.entrySet()) {
+                Integer order = entry.getKey();
+                byte[] result = entry.getValue();
+
+                FieldEntity fieldEntity = fieldMap.get(order);
+
+                Object value = null;
+
+                if (fieldEntity.getFieldTpye() == String.class) {
+                    value = getStringValue(result);
+                } else if (fieldEntity.getFieldTpye() == Integer.class) {
+                    value = getIntegerValue(result);
+                }
+                setBeanProperty(fieldEntity.getFieldName(), subEntity, value, reflector);
+            }
+            ((Collection) entity).add(subEntity);
+        }
+    }
+
 
     private void setBeanProperty(ResultSet rs,
                                  ReturnEntity returnEntity,

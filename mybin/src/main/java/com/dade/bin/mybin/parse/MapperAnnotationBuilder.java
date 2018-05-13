@@ -9,6 +9,9 @@ import com.google.common.collect.Maps;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Map;
 
 import static org.springframework.util.Assert.notNull;
@@ -82,16 +85,45 @@ public class MapperAnnotationBuilder {
         // TODO 多线程思考
         Map<Integer, FieldEntity> map = Maps.newHashMap();
         Class<?> returnType = method.getReturnType();
-        Field[] fields = returnType.getDeclaredFields();
-        for (Field field : fields) {
-            Order order = field.getAnnotation(Order.class);
-            String name = field.getName();
-            Class<?> type = field.getType();
-            map.put(order.value(), new FieldEntity(name, type));
+        if (Collection.class.isAssignableFrom(returnType)){
+            re.setReturnType(returnType);
+            Type reType = method.getGenericReturnType();
+            re.setCollection(true);
+            if (reType instanceof ParameterizedType){
+                Type[] actualTypeArguments = ((ParameterizedType) reType).getActualTypeArguments();
+                if (actualTypeArguments != null && actualTypeArguments.length == 1) {
+                    reType = actualTypeArguments[0];
+                    if (reType instanceof Class) {
+                        returnType = (Class<?>) reType;
+                        Field[] fields = returnType.getDeclaredFields();
+                        for (Field field : fields) {
+                            Order order = field.getAnnotation(Order.class);
+                            String name = field.getName();
+                            Class<?> type = field.getType();
+                            map.put(order.value(), new FieldEntity(name, type));
+                        }
+                        re.setRealType(returnType);
+                        re.setFieldMap(map);
+                        configuration.setReturnEntity(re);
+                    } else if (reType instanceof ParameterizedType) {
+                        returnType = (Class<?>) ((ParameterizedType) reType).getRawType();
+                    }
+                }
+            }
+        } else if (Map.class.isAssignableFrom(returnType)){
+            // TODO 添加对Map的支持
+        } else{
+            Field[] fields = returnType.getDeclaredFields();
+            for (Field field : fields) {
+                Order order = field.getAnnotation(Order.class);
+                String name = field.getName();
+                Class<?> type = field.getType();
+                map.put(order.value(), new FieldEntity(name, type));
+            }
+            re.setReturnType(returnType);
+            re.setFieldMap(map);
+            configuration.setReturnEntity(re);
         }
-        re.setReturnType(returnType);
-        re.setFieldMap(map);
-        configuration.setReturnEntity(re);
     }
 
     public void parse() {
