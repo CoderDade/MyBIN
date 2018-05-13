@@ -3,10 +3,13 @@ package com.dade.bin.mybin.mapper;
 import com.dade.bin.mybin.executor.DefaultExecutor;
 import com.dade.bin.mybin.session.BINConfig;
 import com.dade.bin.mybin.session.BINSession;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.List;
 
 import static org.springframework.util.Assert.notNull;
 
@@ -41,10 +44,9 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
         notNull(this.mapperInterface, "Property 'mapperInterface' is required");
 
         // 在这里解析注解
-        BINConfig configuration = getSession().getConfiguration();
-        if (!configuration.hasMapper(this.mapperInterface)) {
+        if (!getSession().hasMapper(this.mapperInterface)) {
             try {
-                configuration.addMapper(this.mapperInterface);
+                getSession().addMapper(this.mapperInterface);
             } catch (Exception e) {
                 logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
                 throw new IllegalArgumentException(e);
@@ -60,7 +62,7 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
         // 这里和mybatis不同，不需要去解析xml，所以直接用空的Config
         // bug#1 getSession 不断产生新的config
         if (this.session == null) {
-            BINSession binSession =  new BINSession(new BINConfig(),new DefaultExecutor());
+            BINSession binSession =  new BINSession(Lists.newArrayList(), new DefaultExecutor());
             this.session = binSession;
         }
         return this.session;

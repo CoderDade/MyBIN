@@ -8,18 +8,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapperRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(MapperRegistry.class);
 
-    private final BINConfig config;
+    private final List<BINConfig> configs;
 
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
 
-    public MapperRegistry(BINConfig config) {
-        this.config = config;
+    public MapperRegistry(List<BINConfig> configs) {
+        this.configs = configs;
     }
 
     public <T> T getMapper(Class<T> type, BINSession session) {
@@ -49,7 +50,7 @@ public class MapperRegistry {
                 // It's important that the type is added before the parser is run
                 // otherwise the binding may automatically be attempted by the
                 // mapper parser. If the type is already known, it won't try.
-                MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
+                MapperAnnotationBuilder parser = new MapperAnnotationBuilder(configs, type);
                 parser.parse();
                 loadCompleted = true;
             } finally {

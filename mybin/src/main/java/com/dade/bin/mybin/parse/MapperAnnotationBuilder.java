@@ -12,17 +12,18 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.util.Assert.notNull;
 
 public class MapperAnnotationBuilder {
 
-    private final BINConfig configuration;
+    private final List<BINConfig> configurations;
     private final Class<?> type;
 
-    public MapperAnnotationBuilder(BINConfig configuration, Class<?> type) {
-        this.configuration = configuration;
+    public MapperAnnotationBuilder(List<BINConfig> configurations, Class<?> type) {
+        this.configurations = configurations;
         this.type = type;
     }
 
@@ -39,6 +40,8 @@ public class MapperAnnotationBuilder {
     private void parseMethodAnnotation() {
         Method[] methods = type.getMethods();
         for (Method m : methods) {
+            BINConfig configuration = new BINConfig();
+            configuration.setMethod(m);
             Annotation[] annotations = m.getAnnotations();
             for (Annotation annotation : annotations) {
                 if (annotation instanceof Block) {
@@ -75,12 +78,13 @@ public class MapperAnnotationBuilder {
                     configuration.setRegularConfig(conMap);
                 }
             }
-            parseResultMap(m);
+            parseResultMap(m, configuration);
+            this.configurations.add(configuration);
         }
 
     }
 
-    private void parseResultMap(Method method) {
+    private void parseResultMap(Method method, BINConfig configuration) {
         ReturnEntity re = new ReturnEntity();
         // TODO 多线程思考
         Map<Integer, FieldEntity> map = Maps.newHashMap();

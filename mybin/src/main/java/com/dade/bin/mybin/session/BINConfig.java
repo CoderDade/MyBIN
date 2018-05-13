@@ -2,6 +2,7 @@ package com.dade.bin.mybin.session;
 
 import com.dade.bin.mybin.binding.MapperRegistry;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public class BINConfig {
@@ -13,6 +14,7 @@ public class BINConfig {
     String fileName;
     String filePackage;
     String filePackageRegex;
+    Method method;
 
     Map<Integer, Integer> regularConfig;
 
@@ -32,20 +34,6 @@ public class BINConfig {
 
     public void setFilePackageRegex(String filePackageRegex) {
         this.filePackageRegex = filePackageRegex;
-    }
-
-    protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
-
-    public <T> T getMapper(Class<T> type, BINSession session) {
-        return mapperRegistry.getMapper(type, session);
-    }
-
-    public boolean hasMapper(Class<?> type) {
-        return mapperRegistry.hasMapper(type);
-    }
-
-    public <T> void addMapper(Class<T> type) {
-        mapperRegistry.addMapper(type);
     }
 
     public Integer getBlockLen() {
@@ -94,5 +82,13 @@ public class BINConfig {
 
     public void setRegularConfig(Map<Integer, Integer> regularConfig) {
         this.regularConfig = regularConfig;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
     }
 }

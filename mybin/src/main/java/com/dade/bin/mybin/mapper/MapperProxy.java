@@ -28,7 +28,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
                 t.printStackTrace();
             }
         }
-        return binSession.clean();
+        return binSession.clean(method);
     }
 
 //    private MapperMethod cachedMapperMethod(Method method) {
