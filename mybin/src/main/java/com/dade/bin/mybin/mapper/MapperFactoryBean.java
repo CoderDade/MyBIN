@@ -1,24 +1,27 @@
 package com.dade.bin.mybin.mapper;
 
 import com.dade.bin.mybin.executor.DefaultExecutor;
-import com.dade.bin.mybin.session.BINConfig;
-import com.dade.bin.mybin.session.BINSession;
+import com.dade.bin.mybin.session.DefaultBinSession;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.List;
-
 import static org.springframework.util.Assert.notNull;
 
-public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
+/**
+ * 通过xml配置制定Mapper接口
+ * <bean class="com.dade.bin.mybin.mapper.MapperFactoryBean">
+ *      <property name="mapperInterface" value="com.dade.bin.test.BINTestInterface"/>
+ * </bean>
+ */
+public class MapperFactoryBean<T> implements InitializingBean, FactoryBean<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(MapperFactoryBean.class);
 
     private Class<T> mapperInterface;
-    private BINSession session;
+    private DefaultBinSession session;
 
     public MapperFactoryBean(Class<T> mapperInterface) {
         this.mapperInterface = mapperInterface;
@@ -58,12 +61,12 @@ public class MapperFactoryBean<T>  implements InitializingBean, FactoryBean<T> {
     }
 
 
-    private BINSession getSession(){
+    private DefaultBinSession getSession() {
         // 这里和mybatis不同，不需要去解析xml，所以直接用空的Config
         // bug#1 getSession 不断产生新的config
         if (this.session == null) {
-            BINSession binSession =  new BINSession(Lists.newArrayList(), new DefaultExecutor());
-            this.session = binSession;
+            DefaultBinSession defaultBinSession = new DefaultBinSession(Lists.newArrayList(), new DefaultExecutor());
+            this.session = defaultBinSession;
         }
         return this.session;
     }

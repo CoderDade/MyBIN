@@ -1,7 +1,7 @@
 package com.dade.bin.mybin.mapper;
 
 import com.dade.bin.mybin.binding.MapperMethod;
-import com.dade.bin.mybin.session.BINSession;
+import com.dade.bin.mybin.session.DefaultBinSession;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
@@ -10,12 +10,12 @@ import java.util.Map;
 
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
-    private final BINSession binSession;
+    private final DefaultBinSession defaultBinSession;
     private final Class<T> mapperInterface;
     private final Map<Method, MapperMethod> methodCache;
 
-    public MapperProxy(BINSession binSession, Class<T> mapperInterface, Map<Method, MapperMethod> methodCache) {
-        this.binSession = binSession;
+    public MapperProxy(DefaultBinSession defaultBinSession, Class<T> mapperInterface, Map<Method, MapperMethod> methodCache) {
+        this.defaultBinSession = defaultBinSession;
         this.mapperInterface = mapperInterface;
         this.methodCache = methodCache;
     }
@@ -28,13 +28,13 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
                 t.printStackTrace();
             }
         }
-        return binSession.clean(method);
+        return defaultBinSession.clean(method);
     }
 
 //    private MapperMethod cachedMapperMethod(Method method) {
 //        MapperMethod mapperMethod = methodCache.get(method);
 //        if (mapperMethod == null) {
-//            mapperMethod = new MapperMethod(mapperInterface, method, binSession.getConfiguration());
+//            mapperMethod = new MapperMethod(mapperInterface, method, defaultBinSession.getConfiguration());
 //            methodCache.put(method, mapperMethod);
 //        }
 //        return mapperMethod;

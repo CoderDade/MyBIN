@@ -5,31 +5,30 @@ import com.dade.bin.mybin.reflection.DefaultReflectorFactory;
 import com.dade.bin.mybin.reflection.Reflector;
 import com.dade.bin.mybin.reflection.factory.DefaultObjectFactory;
 import com.dade.bin.mybin.reflection.invoker.Invoker;
-import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.BinConfig;
 import com.dade.bin.mybin.session.FieldEntity;
-import com.dade.bin.mybin.session.ReturnEntity;
+import com.dade.bin.mybin.session.ResultEntity;
 import com.dade.bin.mybin.util.ExceptionUtil;
 import com.dade.bin.mybin.util.HexUtil;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DefaultResultSetHandler {
 
     private final DefaultObjectFactory objectFactory = new DefaultObjectFactory();
     private final DefaultReflectorFactory reflectorFactory = new DefaultReflectorFactory();
 
-    public Object handleResultSets(ResultSet rs, BINConfig config) {
-        ReturnEntity returnEntity = config.getReturnEntity();
-        Object entity = objectFactory.create(returnEntity.getReturnType());
+    public Object handleResultSets(ResultSet rs, BinConfig config) {
+        ResultEntity resultEntity = config.getResultEntity();
+        Object entity = objectFactory.create(resultEntity.getResultType());
 
-        if (returnEntity.isCollection()) {
-            setBeanPropertyForCollection(rs, returnEntity, entity);
+        if (resultEntity.isCollection()) {
+            setBeanPropertyForCollection(rs, resultEntity, entity);
         } else {
-            Reflector reflector = reflectorFactory.findForClass(returnEntity.getReturnType());
-            setBeanProperty(rs, returnEntity, entity, reflector);
+            Reflector reflector = reflectorFactory.findForClass(resultEntity.getResultType());
+            setBeanProperty(rs, resultEntity, entity, reflector);
         }
 
 
@@ -37,14 +36,14 @@ public class DefaultResultSetHandler {
     }
 
     private void setBeanPropertyForCollection(ResultSet rs,
-                                              ReturnEntity returnEntity,
+                                              ResultEntity resultEntity,
                                               Object entity) {
-        Reflector reflector = reflectorFactory.findForClass(returnEntity.getRealType());
-        Map<Integer, FieldEntity> fieldMap = returnEntity.getFieldMap();
+        Reflector reflector = reflectorFactory.findForClass(resultEntity.getRealType());
+        Map<Integer, FieldEntity> fieldMap = resultEntity.getFieldMap();
 
         List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
         for (Map<Integer, byte[]> cleanResultMap : cleanResults) {
-            Object subEntity = objectFactory.create(returnEntity.getRealType());
+            Object subEntity = objectFactory.create(resultEntity.getRealType());
             for (Map.Entry<Integer, byte[]> entry : cleanResultMap.entrySet()) {
                 Integer order = entry.getKey();
                 byte[] result = entry.getValue();
@@ -66,11 +65,11 @@ public class DefaultResultSetHandler {
 
 
     private void setBeanProperty(ResultSet rs,
-                                 ReturnEntity returnEntity,
+                                 ResultEntity resultEntity,
                                  Object entity,
                                  Reflector reflector) {
 
-        Map<Integer, FieldEntity> fieldMap = returnEntity.getFieldMap();
+        Map<Integer, FieldEntity> fieldMap = resultEntity.getFieldMap();
 
         List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
         for (Map<Integer, byte[]> cleanResultMap : cleanResults) {

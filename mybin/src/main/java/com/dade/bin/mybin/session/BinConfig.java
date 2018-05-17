@@ -1,11 +1,9 @@
 package com.dade.bin.mybin.session;
 
-import com.dade.bin.mybin.binding.MapperRegistry;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class BINConfig {
+public class BinConfig {
 
     Integer blockLen;
     Boolean isReverse;
@@ -18,14 +16,14 @@ public class BINConfig {
 
     Map<Integer, Integer> regularConfig;
 
-    ReturnEntity returnEntity;
+    ResultEntity resultEntity;
 
-    public ReturnEntity getReturnEntity() {
-        return returnEntity;
+    public ResultEntity getResultEntity() {
+        return resultEntity;
     }
 
-    public void setReturnEntity(ReturnEntity returnEntity) {
-        this.returnEntity = returnEntity;
+    public void setResultEntity(ResultEntity resultEntity) {
+        this.resultEntity = resultEntity;
     }
 
     public String getFilePackageRegex() {

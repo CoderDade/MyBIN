@@ -1,7 +1,7 @@
 package com.dade.bin.test;
 
 import com.dade.bin.mybin.executor.DefaultExecutor;
-import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.BinConfig;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
@@ -18,8 +18,8 @@ import static com.dade.bin.mybin.util.HexUtil.binary;
 
 public class BINParseTest {
 
-    private BINConfig getMockBINConfig(){
-        BINConfig config = new BINConfig();
+    private BinConfig getMockBINConfig(){
+        BinConfig config = new BinConfig();
         config.setBlockLen(2);
         config.setReverse(true);
         config.setSubBlockLen(1);
@@ -35,7 +35,7 @@ public class BINParseTest {
 
     @Test
     public void testParse(){
-        BINConfig config = getMockBINConfig();
+        BinConfig config = getMockBINConfig();
         String pathName = config.getFilePackage();
         FileInputStream fin = null;
         Map<Integer, byte[]> resultMap = Maps.newHashMap();

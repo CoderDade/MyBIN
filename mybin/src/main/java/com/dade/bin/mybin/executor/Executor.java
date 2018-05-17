@@ -1,9 +1,9 @@
 package com.dade.bin.mybin.executor;
 
-import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.BinConfig;
 
 public interface Executor {
 
-    Object clean(BINConfig config);
+    Object clean(BinConfig config);
 
 }

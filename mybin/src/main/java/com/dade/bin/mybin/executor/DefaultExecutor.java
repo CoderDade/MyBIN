@@ -2,7 +2,7 @@ package com.dade.bin.mybin.executor;
 
 import com.dade.bin.mybin.executor.resultset.DefaultResultSetHandler;
 import com.dade.bin.mybin.executor.resultset.ResultSet;
-import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.BinConfig;
 import com.dade.bin.mybin.util.HexUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -31,14 +31,14 @@ public class DefaultExecutor implements Executor {
     private final DefaultResultSetHandler resultSetHandler = new DefaultResultSetHandler();
 
     @Override
-    public Object clean(BINConfig config) {
+    public Object clean(BinConfig config) {
         if (config.getReverse()) {
             return cleanWithReverse(config);
         }
         return cleanWithoutReverse(config);
     }
 
-    private Object cleanWithReverse(BINConfig config) {
+    private Object cleanWithReverse(BinConfig config) {
 
         if (CollectionUtils.isEmpty(config.getRegularConfig())) {
             return cleanWithoutRegularConfig(config);
@@ -46,11 +46,11 @@ public class DefaultExecutor implements Executor {
         return cleanWithRegularConfig(config);
     }
 
-    private Object cleanWithoutReverse(BINConfig config) {
+    private Object cleanWithoutReverse(BinConfig config) {
         return null;
     }
 
-    public Object cleanWithoutRegularConfig(BINConfig config) {
+    public Object cleanWithoutRegularConfig(BinConfig config) {
         String pathName = config.getFilePackage();
         FileInputStream fin = null;
         List<Map<Integer, byte[]>> resultMaps = Lists.newArrayList();
@@ -116,11 +116,11 @@ public class DefaultExecutor implements Executor {
         return resultSetHandler.handleResultSets(rs, config);
     }
 
-    private Object cleanWithRegularConfig(BINConfig config) {
+    private Object cleanWithRegularConfig(BinConfig config) {
         return null;
     }
 
-    private Object demo(BINConfig config){
+    private Object demo(BinConfig config){
         String pathname = config.getFilePackage();
         FileInputStream fin = null;
         try {

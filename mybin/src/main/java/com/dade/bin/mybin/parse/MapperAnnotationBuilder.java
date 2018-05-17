@@ -1,9 +1,9 @@
 package com.dade.bin.mybin.parse;
 
 import com.dade.bin.mybin.annotations.*;
-import com.dade.bin.mybin.session.BINConfig;
+import com.dade.bin.mybin.session.BinConfig;
 import com.dade.bin.mybin.session.FieldEntity;
-import com.dade.bin.mybin.session.ReturnEntity;
+import com.dade.bin.mybin.session.ResultEntity;
 import com.google.common.collect.Maps;
 
 import java.lang.annotation.Annotation;
@@ -19,10 +19,10 @@ import static org.springframework.util.Assert.notNull;
 
 public class MapperAnnotationBuilder {
 
-    private final List<BINConfig> configurations;
+    private final List<BinConfig> configurations;
     private final Class<?> type;
 
-    public MapperAnnotationBuilder(List<BINConfig> configurations, Class<?> type) {
+    public MapperAnnotationBuilder(List<BinConfig> configurations, Class<?> type) {
         this.configurations = configurations;
         this.type = type;
     }
@@ -40,7 +40,7 @@ public class MapperAnnotationBuilder {
     private void parseMethodAnnotation() {
         Method[] methods = type.getMethods();
         for (Method m : methods) {
-            BINConfig configuration = new BINConfig();
+            BinConfig configuration = new BinConfig();
             configuration.setMethod(m);
             Annotation[] annotations = m.getAnnotations();
             for (Annotation annotation : annotations) {
@@ -84,13 +84,13 @@ public class MapperAnnotationBuilder {
 
     }
 
-    private void parseResultMap(Method method, BINConfig configuration) {
-        ReturnEntity re = new ReturnEntity();
+    private void parseResultMap(Method method, BinConfig configuration) {
+        ResultEntity re = new ResultEntity();
         // TODO 多线程思考
         Map<Integer, FieldEntity> map = Maps.newHashMap();
         Class<?> returnType = method.getReturnType();
         if (Collection.class.isAssignableFrom(returnType)){
-            re.setReturnType(returnType);
+            re.setResultType(returnType);
             Type reType = method.getGenericReturnType();
             re.setCollection(true);
             if (reType instanceof ParameterizedType){
@@ -108,7 +108,7 @@ public class MapperAnnotationBuilder {
                         }
                         re.setRealType(returnType);
                         re.setFieldMap(map);
-                        configuration.setReturnEntity(re);
+                        configuration.setResultEntity(re);
                     } else if (reType instanceof ParameterizedType) {
                         returnType = (Class<?>) ((ParameterizedType) reType).getRawType();
                     }
@@ -124,9 +124,9 @@ public class MapperAnnotationBuilder {
                 Class<?> type = field.getType();
                 map.put(order.value(), new FieldEntity(name, type));
             }
-            re.setReturnType(returnType);
+            re.setResultType(returnType);
             re.setFieldMap(map);
-            configuration.setReturnEntity(re);
+            configuration.setResultEntity(re);
         }
     }
 

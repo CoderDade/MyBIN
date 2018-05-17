@@ -1,7 +1,7 @@
 package com.dade.bin.mybin.binding;
 
 import com.dade.bin.mybin.mapper.MapperProxy;
-import com.dade.bin.mybin.session.BINSession;
+import com.dade.bin.mybin.session.DefaultBinSession;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -25,8 +25,8 @@ public class MapperProxyFactory<T> {
         return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);
     }
 
-    public T newInstance(BINSession binSession) {
-        final MapperProxy<T> mapperProxy = new MapperProxy<T>(binSession, mapperInterface, methodCache);
+    public T newInstance(DefaultBinSession defaultBinSession) {
+        final MapperProxy<T> mapperProxy = new MapperProxy<T>(defaultBinSession, mapperInterface, methodCache);
         return newInstance(mapperProxy);
     }
 

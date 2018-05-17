@@ -2,7 +2,13 @@ package com.dade.bin.mybin.session;
 
 public class FieldEntity {
 
+    /**
+     * 字段名
+     */
     String fieldName;
+    /**
+     * 字段类型
+     */
     Class<?> fieldTpye;
 
     public FieldEntity(String fieldName, Class<?> fieldTpye) {

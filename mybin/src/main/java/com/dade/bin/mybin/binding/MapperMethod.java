@@ -1,14 +1,5 @@
 package com.dade.bin.mybin.binding;
 
-import com.dade.bin.mybin.reflection.TypeParameterResolver;
-import com.dade.bin.mybin.session.BINConfig;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Optional;
-
 
 // TODO 增加返回值是Collection 还是 Entity 的判断
 public class MapperMethod {
@@ -24,14 +15,14 @@ public class MapperMethod {
 //    private final Integer rowBoundsIndex;
 //    private final ParamNameResolver paramNameResolver;
 //
-//    public MapperMethod(BINConfig configuration, Class<?> mapperInterface, Method method) {
+//    public MapperMethod(BinConfig configuration, Class<?> mapperInterface, Method method) {
 //        Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
 //        if (resolvedReturnType instanceof Class<?>) {
 //            this.returnType = (Class<?>) resolvedReturnType;
 //        } else if (resolvedReturnType instanceof ParameterizedType) {
 //            this.returnType = (Class<?>) ((ParameterizedType) resolvedReturnType).getRawType();
 //        } else {
-//            this.returnType = method.getReturnType();
+//            this.returnType = method.getResultType();
 //        }
 //        this.returnsVoid = void.class.equals(this.returnType);
 //        this.returnsMany = configuration.getObjectFactory().isCollection(this.returnType) || this.returnType.isArray();
@@ -68,7 +59,7 @@ public class MapperMethod {
 //        return mapKey;
 //    }
 //
-//    public Class<?> getReturnType() {
+//    public Class<?> getResultType() {
 //        return returnType;
 //    }
 //
@@ -114,7 +105,7 @@ public class MapperMethod {
 //
 //    private String getMapKey(Method method) {
 //        String mapKey = null;
-//        if (Map.class.isAssignableFrom(method.getReturnType())) {
+//        if (Map.class.isAssignableFrom(method.getResultType())) {
 //            final MapKey mapKeyAnnotation = method.getAnnotation(MapKey.class);
 //            if (mapKeyAnnotation != null) {
 //                mapKey = mapKeyAnnotation.value();

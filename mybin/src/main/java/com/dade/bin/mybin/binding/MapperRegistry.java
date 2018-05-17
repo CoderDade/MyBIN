@@ -2,8 +2,8 @@ package com.dade.bin.mybin.binding;
 
 import com.dade.bin.mybin.exceptions.BindingException;
 import com.dade.bin.mybin.parse.MapperAnnotationBuilder;
-import com.dade.bin.mybin.session.BINConfig;
-import com.dade.bin.mybin.session.BINSession;
+import com.dade.bin.mybin.session.BinConfig;
+import com.dade.bin.mybin.session.DefaultBinSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,15 +15,15 @@ public class MapperRegistry {
 
     private static final Logger logger = LoggerFactory.getLogger(MapperRegistry.class);
 
-    private final List<BINConfig> configs;
+    private final List<BinConfig> configs;
 
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
 
-    public MapperRegistry(List<BINConfig> configs) {
+    public MapperRegistry(List<BinConfig> configs) {
         this.configs = configs;
     }
 
-    public <T> T getMapper(Class<T> type, BINSession session) {
+    public <T> T getMapper(Class<T> type, DefaultBinSession session) {
         final MapperProxyFactory<T> mapperProxyFactory = (MapperProxyFactory<T>) knownMappers.get(type);
         if (mapperProxyFactory == null) {
             throw new BindingException("Type " + type + " is not known to the MapperRegistry.");

@@ -8,26 +8,26 @@ import java.util.List;
 
 import static org.springframework.util.Assert.notNull;
 
-public class BINSession {
+public class DefaultBinSession {
 
-    private final List<BINConfig> binConfigs;
+    private final List<BinConfig> binConfigs;
     private final Executor executor;
     private final MapperRegistry mapperRegistry;
 
-    public BINSession(List<BINConfig> binConfigs, Executor executor){
+    public DefaultBinSession(List<BinConfig> binConfigs, Executor executor) {
         this.binConfigs = binConfigs;
         this.executor = executor;
         this.mapperRegistry = new MapperRegistry(this.binConfigs);
     }
 
-    public Object clean(Method method){
-        BINConfig config =
+    public Object clean(Method method) {
+        BinConfig config =
                 binConfigs.stream().filter(con -> con.getMethod().getName().equals(method.getName())).findFirst().orElse(null);
         notNull(config, "Property 'config' is required");
         return executor.clean(config);
     }
 
-    public List<BINConfig> getConfiguration() {
+    public List<BinConfig> getConfiguration() {
         return binConfigs;
     }
 

@@ -2,13 +2,23 @@ package com.dade.bin.mybin.session;
 
 import java.util.Map;
 
-public class ReturnEntity {
+public class ResultEntity {
 
-    Class<?> returnType;
-    // 字段顺序 和 详细信息
+    /**
+     * 返回值类型
+     */
+    Class<?> resultType;
+    /**
+     * 字段顺序 和 详细信息
+     */
     Map<Integer, FieldEntity> fieldMap;
-
+    /**
+     * 判断返回值是不是集合
+     */
     boolean isCollection = false;
+    /**
+     * 如果返回值是集合，这个才是真正的返回值类型，如果不是集合，这个字段没有意义
+     */
     Class<?> realType;
 
 
@@ -28,12 +38,12 @@ public class ReturnEntity {
         this.realType = realType;
     }
 
-    public Class<?> getReturnType() {
-        return returnType;
+    public Class<?> getResultType() {
+        return resultType;
     }
 
-    public void setReturnType(Class<?> returnType) {
-        this.returnType = returnType;
+    public void setResultType(Class<?> resultType) {
+        this.resultType = resultType;
     }
 
     public Map<Integer, FieldEntity> getFieldMap() {
