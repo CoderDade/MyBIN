@@ -20,7 +20,6 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
     @Override
     public <T> T create(Class<T> type, List<Class<?>> constructorArgTypes, List<Object> constructorArgs) {
         Class<?> classToCreate = resolveInterface(type);
-        // we know types are assignable
         return (T) instantiateClass(classToCreate, constructorArgTypes, constructorArgs);
     }
 
@@ -51,7 +50,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                     argTypes.append(argType.getSimpleName());
                     argTypes.append(",");
                 }
-                argTypes.deleteCharAt(argTypes.length() - 1); // remove trailing ,
+                argTypes.deleteCharAt(argTypes.length() - 1);
             }
             StringBuilder argValues = new StringBuilder();
             if (constructorArgs != null && !constructorArgs.isEmpty()) {
@@ -71,7 +70,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
             classToCreate = ArrayList.class;
         } else if (type == Map.class) {
             classToCreate = HashMap.class;
-        } else if (type == SortedSet.class) { // issue #510 Collections Support
+        } else if (type == SortedSet.class) {
             classToCreate = TreeSet.class;
         } else if (type == Set.class) {
             classToCreate = HashSet.class;

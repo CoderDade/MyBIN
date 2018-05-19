@@ -5,17 +5,41 @@ import java.util.Map;
 
 public class BinConfig {
 
+    /**
+     * 一块数据的长度的字节数
+     */
     Integer blockLen;
+    /**
+     * 整形数据是否要翻转再转换
+     */
     Boolean isReverse;
-
+    /**
+     *  块数据内子元素长度的字节数
+     */
     Integer subBlockLen;
+    /**
+     *  要清洗的文件名
+     */
     String fileName;
+    /**
+     *  要清洗的文件路径（包括文件名）
+     */
     String filePackage;
+    /**
+     *  要清洗的文件名的正则
+     */
     String filePackageRegex;
+    /**
+     *  接口下的具体方法
+     */
     Method method;
-
+    /**
+     *  特殊配置
+     */
     Map<Integer, Integer> regularConfig;
-
+    /**
+     *  返回值
+     */
     ResultEntity resultEntity;
 
     public ResultEntity getResultEntity() {

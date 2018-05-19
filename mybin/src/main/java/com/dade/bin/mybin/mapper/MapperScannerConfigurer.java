@@ -10,6 +10,13 @@ import org.springframework.util.StringUtils;
 
 import static org.springframework.util.Assert.notNull;
 
+/**
+ * 扫描制定路径下的所有接口
+ * xml 配置
+ * <bean class="com.dade.bin.mybin.mapper.MapperScannerConfigurer">
+ * <property name="basePackage" value="com.dade.bin.test"/>
+ * </bean>
+ */
 public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProcessor, InitializingBean {
 
     private String basePackage;

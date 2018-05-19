@@ -30,8 +30,6 @@ public class DefaultResultSetHandler {
             Reflector reflector = reflectorFactory.findForClass(resultEntity.getResultType());
             setBeanProperty(rs, resultEntity, entity, reflector);
         }
-
-
         return entity;
     }
 

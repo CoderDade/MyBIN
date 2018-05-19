@@ -47,7 +47,6 @@ public class Reflector {
                     try {
                         constructor.setAccessible(true);
                     } catch (Exception e) {
-                        // Ignored. This is only a final precaution, nothing we can do.
                     }
                 }
                 if (constructor.isAccessible()) {
@@ -95,7 +94,6 @@ public class Reflector {
                         winner = candidate;
                     }
                 } else if (candidateType.isAssignableFrom(winnerType)) {
-                    // OK getter type is descendant
                 } else if (winnerType.isAssignableFrom(candidateType)) {
                     winner = candidate;
                 } else {
@@ -150,7 +148,6 @@ public class Reflector {
             for (Method setter : setters) {
                 Class<?> paramType = setter.getParameterTypes()[0];
                 if (paramType.equals(getterType)) {
-                    // should be the best match
                     match = setter;
                     break;
                 }
@@ -158,7 +155,6 @@ public class Reflector {
                     try {
                         match = pickBetterSetter(match, setter, propName);
                     } catch (ReflectionException e) {
-                        // there could still be the 'best match'
                         match = null;
                         exception = e;
                     }
@@ -229,9 +225,6 @@ public class Reflector {
             }
             if (field.isAccessible()) {
                 if (!setMethods.containsKey(field.getName())) {
-                    // issue #379 - removed the check for final because JDK 1.5 allows
-                    // modification of final fields through reflection (JSR-133). (JGB)
-                    // pr #16 - final static can only be set by the classloader
                     int modifiers = field.getModifiers();
                     if (!(Modifier.isFinal(modifiers) && Modifier.isStatic(modifiers))) {
                         addSetField(field);
@@ -267,23 +260,11 @@ public class Reflector {
         return !(name.startsWith("$") || "serialVersionUID".equals(name) || "class".equals(name));
     }
 
-    /*
-     * This method returns an array containing all methods
-     * declared in this class and any superclass.
-     * We use this method, instead of the simpler Class.getMethods(),
-     * because we want to look for private methods as well.
-     *
-     * @param cls The class
-     * @return An array containing all methods in this class
-     */
     private Method[] getClassMethods(Class<?> cls) {
         Map<String, Method> uniqueMethods = new HashMap<String, Method>();
         Class<?> currentClass = cls;
         while (currentClass != null && currentClass != Object.class) {
             addUniqueMethods(uniqueMethods, currentClass.getDeclaredMethods());
-
-            // we also need to look for interface methods -
-            // because the class may be abstract
             Class<?>[] interfaces = currentClass.getInterfaces();
             for (Class<?> anInterface : interfaces) {
                 addUniqueMethods(uniqueMethods, anInterface.getMethods());
@@ -301,15 +282,11 @@ public class Reflector {
         for (Method currentMethod : methods) {
             if (!currentMethod.isBridge()) {
                 String signature = getSignature(currentMethod);
-                // check to see if the method is already known
-                // if it is known, then an extended class must have
-                // overridden a method
                 if (!uniqueMethods.containsKey(signature)) {
                     if (canAccessPrivateMethods()) {
                         try {
                             currentMethod.setAccessible(true);
                         } catch (Exception e) {
-                            // Ignored. This is only a final precaution, nothing we can do.
                         }
                     }
 
@@ -350,11 +327,6 @@ public class Reflector {
         return true;
     }
 
-    /*
-     * Gets the name of the class the instance provides information for
-     *
-     * @return The class name
-     */
     public Class<?> getType() {
         return type;
     }
@@ -387,12 +359,6 @@ public class Reflector {
         return method;
     }
 
-    /*
-     * Gets the type for a property setter
-     *
-     * @param propertyName - the name of the property
-     * @return The Class of the propery setter
-     */
     public Class<?> getSetterType(String propertyName) {
         Class<?> clazz = setTypes.get(propertyName);
         if (clazz == null) {
@@ -401,12 +367,6 @@ public class Reflector {
         return clazz;
     }
 
-    /*
-     * Gets the type for a property getter
-     *
-     * @param propertyName - the name of the property
-     * @return The Class of the propery getter
-     */
     public Class<?> getGetterType(String propertyName) {
         Class<?> clazz = getTypes.get(propertyName);
         if (clazz == null) {
@@ -415,40 +375,18 @@ public class Reflector {
         return clazz;
     }
 
-    /*
-     * Gets an array of the readable properties for an object
-     *
-     * @return The array
-     */
     public String[] getGetablePropertyNames() {
         return readablePropertyNames;
     }
 
-    /*
-     * Gets an array of the writeable properties for an object
-     *
-     * @return The array
-     */
     public String[] getSetablePropertyNames() {
         return writeablePropertyNames;
     }
 
-    /*
-     * Check to see if a class has a writeable property by name
-     *
-     * @param propertyName - the name of the property to check
-     * @return True if the object has a writeable property by the name
-     */
     public boolean hasSetter(String propertyName) {
         return setMethods.keySet().contains(propertyName);
     }
 
-    /*
-     * Check to see if a class has a readable property by name
-     *
-     * @param propertyName - the name of the property to check
-     * @return True if the object has a readable property by the name
-     */
     public boolean hasGetter(String propertyName) {
         return getMethods.keySet().contains(propertyName);
     }
