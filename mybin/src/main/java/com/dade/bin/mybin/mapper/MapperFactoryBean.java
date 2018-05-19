@@ -54,7 +54,6 @@ public class MapperFactoryBean<T> implements InitializingBean, FactoryBean<T> {
                 logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
                 throw new IllegalArgumentException(e);
             } finally {
-//                ErrorContext.instance().reset();
             }
         }
 

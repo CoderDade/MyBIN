@@ -9,8 +9,6 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -18,7 +16,7 @@ import java.util.Set;
 /**
  * 配置入口
  */
-public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
+public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClassPathMapperScanner.class);
 
@@ -29,9 +27,8 @@ public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * Calls the parent search that will search and register all the candidates.
-     * Then the registered objects are post processed to set them as
-     * MapperFactoryBeans
+     * 重写 doScan
+     * 将 basePackage 下所有扫描到的 符合条件的接口转换为 MapperFactoryBeans
      */
     @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
@@ -47,7 +44,7 @@ public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
         return beanDefinitions;
     }
 
-    private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions){
+    private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
         GenericBeanDefinition definition;
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
@@ -55,40 +52,11 @@ public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
             LOGGER.debug("Creating MapperFactoryBean with name '" + holder.getBeanName()
                     + "' and '" + beanClassName + "' mapperInterface");
 
-            // the mapper interface is the original class of the bean
-            // but, the actual class of the bean is MapperFactoryBean
+            // TODO 在这里注册为 MapperFactoryBeans
             definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName); // issue #59
             definition.setBeanClass(this.mapperFactoryBean.getClass());
-
-//            definition.getPropertyValues().add("addToConfig", this.addToConfig);
-
-            boolean explicitFactoryUsed = false;
-//            if (StringUtils.hasText(this.sqlSessionFactoryBeanName)) {
-//                definition.getPropertyValues().add("sqlSessionFactory", new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
-//                explicitFactoryUsed = true;
-//            } else if (this.sqlSessionFactory != null) {
-//                definition.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
-//                explicitFactoryUsed = true;
-//            }
-
-//            if (StringUtils.hasText(this.sqlSessionTemplateBeanName)) {
-//                if (explicitFactoryUsed) {
-//                    LOGGER.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
-//                }
-//                definition.getPropertyValues().add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
-//                explicitFactoryUsed = true;
-//            } else if (this.sqlSessionTemplate != null) {
-//                if (explicitFactoryUsed) {
-//                    LOGGER.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
-//                }
-//                definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
-//                explicitFactoryUsed = true;
-//            }
-//
-            if (!explicitFactoryUsed) {
-                LOGGER.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
-                definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
-            }
+            LOGGER.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
+            definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         }
     }
 
@@ -110,34 +78,14 @@ public class ClassPathMapperScanner  extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * Configures parent scanner to search for the right interfaces. It can search
-     * for all interfaces or just for those that extends a markerInterface or/and
-     * those annotated with the annotationClass
+     * 配置要注册的接口
+     * bug#2 scnner dont work cus didnt register
      */
-    // bug#2 scnner dont work cus didnt register
     public void registerFilters() {
         boolean acceptAllInterfaces = true;
 
         // TODO 配置注解入口
-        // if specified, use the given annotation and / or marker interface
-//        if (this.annotationClass != null) {
-//            addIncludeFilter(new AnnotationTypeFilter(this.annotationClass));
-//            acceptAllInterfaces = false;
-//        }
-
-        // override AssignableTypeFilter to ignore matches on the actual marker interface
-//        if (this.markerInterface != null) {
-//            addIncludeFilter(new AssignableTypeFilter(this.markerInterface) {
-//                @Override
-//                protected boolean matchClassName(String className) {
-//                    return false;
-//                }
-//            });
-//            acceptAllInterfaces = false;
-//        }
-
         if (acceptAllInterfaces) {
-            // default include filter that accepts all classes
             addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
         }
 

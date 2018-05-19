@@ -5,3 +5,7 @@
 - Implement Others clean rule, P1
 - Opmition Code, P1
  
+------
+
+
+- BinSession.java
