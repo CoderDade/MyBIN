@@ -58,7 +58,7 @@ public class DefaultObjectFactory implements ObjectFactory, Serializable {
                     argValues.append(String.valueOf(argValue));
                     argValues.append(",");
                 }
-                argValues.deleteCharAt(argValues.length() - 1); // remove trailing ,
+                argValues.deleteCharAt(argValues.length() - 1);
             }
             throw new ReflectionException("Error instantiating " + type + " with invalid types (" + argTypes + ") or values (" + argValues + "). Cause: " + e, e);
         }

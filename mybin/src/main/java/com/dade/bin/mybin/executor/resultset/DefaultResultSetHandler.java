@@ -37,27 +37,16 @@ public class DefaultResultSetHandler {
                                               ResultEntity resultEntity,
                                               Object entity) {
         Reflector reflector = reflectorFactory.findForClass(resultEntity.getRealType());
-        Map<Integer, FieldEntity> fieldMap = resultEntity.getFieldMap();
-
         List<Map<Integer, byte[]>> cleanResults = rs.getResultMaps();
-        for (Map<Integer, byte[]> cleanResultMap : cleanResults) {
+        int collectionSize = cleanResults.size();
+        while (collectionSize>0){
+            collectionSize--;
             Object subEntity = objectFactory.create(resultEntity.getRealType());
-            for (Map.Entry<Integer, byte[]> entry : cleanResultMap.entrySet()) {
-                Integer order = entry.getKey();
-                byte[] result = entry.getValue();
-
-                FieldEntity fieldEntity = fieldMap.get(order);
-
-                Object value = null;
-
-                if (fieldEntity.getFieldTpye() == String.class) {
-                    value = getStringValue(result);
-                } else if (fieldEntity.getFieldTpye() == Integer.class) {
-                    value = getIntegerValue(result);
-                }
-                setBeanProperty(fieldEntity.getFieldName(), subEntity, value, reflector);
-            }
             ((Collection) entity).add(subEntity);
+        }
+
+        for (Object target : (Collection) entity) {
+            setBeanProperty(rs, resultEntity, target, reflector);
         }
     }
 
@@ -74,11 +63,9 @@ public class DefaultResultSetHandler {
             for (Map.Entry<Integer, byte[]> entry : cleanResultMap.entrySet()) {
                 Integer order = entry.getKey();
                 byte[] result = entry.getValue();
-
                 FieldEntity fieldEntity = fieldMap.get(order);
 
                 Object value = null;
-
                 if (fieldEntity.getFieldTpye() == String.class) {
                     value = getStringValue(result);
                 } else if (fieldEntity.getFieldTpye() == Integer.class) {
@@ -86,7 +73,6 @@ public class DefaultResultSetHandler {
                 }
 
                 setBeanProperty(fieldEntity.getFieldName(), entity, value, reflector);
-
             }
         }
     }

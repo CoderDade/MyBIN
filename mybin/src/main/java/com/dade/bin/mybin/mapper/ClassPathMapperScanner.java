@@ -52,7 +52,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             LOGGER.debug("Creating MapperFactoryBean with name '" + holder.getBeanName()
                     + "' and '" + beanClassName + "' mapperInterface");
 
-            // TODO 在这里注册为 MapperFactoryBeans
+            // 修改beanDefinition为 MapperFactoryBeans
             definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName);
             definition.setBeanClass(this.mapperFactoryBean.getClass());
             LOGGER.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
@@ -84,7 +84,6 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     public void registerFilters() {
         boolean acceptAllInterfaces = true;
 
-        // TODO 配置注解入口
         if (acceptAllInterfaces) {
             addIncludeFilter((metadataReader, metadataReaderFactory) -> true);
         }
